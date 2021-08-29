@@ -11,10 +11,10 @@ object Dependencies {
     val quillJdbc = "3.9.0"
     val logback = "1.2.3"
     val pureConfig = "0.14.0"
-    val `catsEffectScalaTest` = "0.5.2"
+    val catsEffectScalaTest = "0.5.2"
   }
 
-  val `cats-effect` = Seq(
+  val catsEffect = Seq(
     "org.typelevel" %% "cats-effect" % "2.2.0" withSources () withJavadoc (),
     "io.chrisdavenport" %% "cats-effect-time" % "0.1.2"
   )
@@ -37,7 +37,7 @@ object Dependencies {
   ).map(_ % Versions.logback)
 
   val test = Seq(
-    "com.codecommit" %% "cats-effect-testing-scalatest" % Versions.`catsEffectScalaTest` % "test"
+    "com.codecommit" %% "cats-effect-testing-scalatest" % Versions.catsEffectScalaTest % "test"
   )
 
   val pureConfig = Seq(

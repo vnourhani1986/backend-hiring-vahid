@@ -9,7 +9,7 @@ scalaVersion := "2.13.6"
 lazy val root = (project in file("."))
   .settings(
     libraryDependencies ++=
-      `cats-effect` ++
+      catsEffect ++
         circe ++
         http4s ++
         sangria ++
@@ -30,5 +30,5 @@ ThisBuild / scalacOptions ++= Seq(
   "-Xfatal-warnings",
   "-language:postfixOps",
   "-language:higherKinds",
-  "-Ypartial-unification"
+//  "-Ypartial-unification"
 )
