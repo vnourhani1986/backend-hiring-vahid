@@ -1,0 +1,11 @@
+.idea
+.bsp
+project/project
+project/target
+target
+node_modules
+package-lock.json
+log/
+*.log
+temp
+temp/
