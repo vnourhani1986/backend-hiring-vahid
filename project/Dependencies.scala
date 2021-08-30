@@ -6,6 +6,7 @@ object Dependencies {
     val circe = "0.12.3"
     val http4s = "1.0.0-M9"
     val sangria = "2.0.0"
+    val sangriaCirce = "1.3.0"
     val scalaScraper = "2.2.1"
     val postgres = "42.2.8"
     val quillJdbc = "3.9.0"
@@ -45,7 +46,10 @@ object Dependencies {
     "com.github.pureconfig" %% "pureconfig-cats-effect"
   ).map(_ % Versions.pureConfig)
 
-  val sangria = Seq("org.sangria-graphql" %% "sangria" % Versions.sangria)
+  val sangria = Seq(
+    "org.sangria-graphql" %% "sangria" % Versions.sangria,
+    "org.sangria-graphql" %% "sangria-circe" % Versions.sangriaCirce
+  )
 
   val scalaScraper = Seq(
     "net.ruippeixotog" %% "scala-scraper" % Versions.scalaScraper
