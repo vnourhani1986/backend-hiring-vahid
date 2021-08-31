@@ -4,9 +4,10 @@ import cats.effect.Concurrent
 import cats.syntax.all._
 import com.avantstay.service.NewsRetrieveService
 import io.circe.{HCursor, Json}
+import org.http4s.Method.POST
 import org.http4s.Status.BadRequest
 import org.http4s.circe.{jsonEncoder, jsonOf}
-import org.http4s.dsl.io.{->, /, GET, Ok, Root}
+import org.http4s.dsl.io.{->, /, Ok, Root}
 import org.http4s.{EntityDecoder, HttpRoutes, Response}
 import sangria.parser.QueryParser
 
@@ -21,7 +22,7 @@ class NewsEndpoint[F[_]: Concurrent](
 
   def routes: HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case request @ GET -> Root / "news" =>
+      case request @ POST -> Root / "news" =>
         for {
           body <- request.as[Json]
           response <- graphQLEndpoint(body)
@@ -30,7 +31,8 @@ class NewsEndpoint[F[_]: Concurrent](
 
   def graphQLEndpoint(json: Json): F[Response[F]] = {
     val cursor: HCursor = json.hcursor
-    val query = cursor.downField("query").as[String].show
+    val query =
+      cursor.downField("query").as[String].toOption.get // todo: need to manage
 
     QueryParser.parse(query) match {
       case Success(queryAst) =>

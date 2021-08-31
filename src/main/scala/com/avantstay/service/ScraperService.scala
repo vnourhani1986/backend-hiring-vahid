@@ -23,11 +23,20 @@ class ScraperNyTimesService[F[_]: Concurrent](
   override def get: F[Document] = scraperClients.get
   override def parse(document: Document): F[Seq[Headline]] =
     for {
-      storyWrapper <- Concurrent[F].delay(document >> elementList("section a"))
-      titleLinks <- Concurrent[F].delay(
-        storyWrapper.map(e => (e >> text("h3"), e.attr("href")))
+      storyWrapper <- Concurrent[F].delay(
+        document >> elementList("section .story-wrapper a h3") // todo: need to check
       )
-    } yield titleLinks.map { case (title, link) => Headline(title, link) }
+      links <- Concurrent[F].delay(
+        storyWrapper.map(_.parent.get) >?> attr("href")("a")
+      )
+      h3s <- Concurrent[F].delay(storyWrapper.map(_.text))
+      titleLinks <- Concurrent[F].delay(
+        links
+          .zip(h3s)
+          .filter { case (link, h3) => link.isDefined }
+          .map { case (link, h3) => (link.get, h3) }
+      )
+    } yield titleLinks.map { case (link, title) => Headline(title, link) }
   override def persist(headlines: Seq[Headline]): F[Boolean] =
     headlineRepo.save(headlines)
   override def scrape: F[Boolean] =

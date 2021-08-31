@@ -1,6 +1,7 @@
 package com.avantstay.infrastructure.repo
 
 import cats.effect.Concurrent
+import com.avantstay.infrastructure.repo.model.Headlines
 import com.avantstay.model.generic.Headline
 import io.getquill.{PostgresJdbcContext, SnakeCase}
 
@@ -15,11 +16,16 @@ class HeadlinePostgresRepo[F[_]: Concurrent](
 
   import ctx._
 
-  override def get: Seq[Headline] = ctx.run(query[Headline]).map(x => x)
+  override def get: Seq[Headline] =
+    ctx
+      .run(query[Headlines])
+      .map(headlines => Headline(headlines.title, headlines.link))
 
   override def save(headlines: Seq[Headline]): F[Boolean] = {
     val insertQuote = quote {
-      liftQuery(headlines).foreach(headline => query[Headline].insert(headline))
+      liftQuery(headlines).foreach(headline =>
+        query[Headlines].insert(Headlines(headline.title, headline.link)) // todo: need to check
+      )
     }
     Concurrent[F].delay(!ctx.run(insertQuote).contains(0))
   }
@@ -27,5 +33,7 @@ class HeadlinePostgresRepo[F[_]: Concurrent](
 
 object HeadlinePostgresRepo {
   def apply[F[_]: Concurrent]: HeadlinePostgresRepo[F] =
-    new HeadlinePostgresRepo[F](new PostgresJdbcContext(SnakeCase, "postgres-db"))
+    new HeadlinePostgresRepo[F](
+      new PostgresJdbcContext(SnakeCase, "postgres-db")
+    )
 }

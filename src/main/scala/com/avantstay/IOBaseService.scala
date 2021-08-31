@@ -23,7 +23,7 @@ object IOBaseService extends IOApp {
       scraperService <- IO(
         ScraperNyTimesService[IO](urlsConfig.nytimes)(headlinePostgresRepo)
       )
-      _ <- scraperService.scrape // todo: need to define in correct place
+//      _ <- scraperService.scrape // todo: need to define in correct place
       newsRetrieveService <- IO(
         NewsRetrieveService[IO](headlinePostgresRepo)(
           implicitly[Concurrent[IO]],
