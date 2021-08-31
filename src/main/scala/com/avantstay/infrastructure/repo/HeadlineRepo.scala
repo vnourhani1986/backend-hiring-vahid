@@ -9,7 +9,7 @@ sealed trait HeadlineRepo[F[_]] {
   def get: Seq[Headline]
   def save(headlines: Seq[Headline]): F[Boolean]
 }
-// todo: change models to repo model
+
 class HeadlinePostgresRepo[F[_]: Concurrent](
     ctx: PostgresJdbcContext[SnakeCase.type]
 ) extends HeadlineRepo[F] {
@@ -24,7 +24,9 @@ class HeadlinePostgresRepo[F[_]: Concurrent](
   override def save(headlines: Seq[Headline]): F[Boolean] = {
     val insertQuote = quote {
       liftQuery(headlines).foreach(headline =>
-        query[Headlines].insert(Headlines(headline.title, headline.link)) // todo: need to check
+        query[Headlines].insert(
+          Headlines(headline.title, headline.link)
+        ).onConflictIgnore
       )
     }
     Concurrent[F].delay(!ctx.run(insertQuote).contains(0))

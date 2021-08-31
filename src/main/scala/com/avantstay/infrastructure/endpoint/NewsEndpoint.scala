@@ -31,20 +31,30 @@ class NewsEndpoint[F[_]: Concurrent](
 
   def graphQLEndpoint(json: Json): F[Response[F]] = {
     val cursor: HCursor = json.hcursor
-    val query =
-      cursor.downField("query").as[String].toOption.get // todo: need to manage
-
-    QueryParser.parse(query) match {
-      case Success(queryAst) =>
-        newsRetrieveService.get(queryAst).map { json =>
-          Response[F](status = Ok).withEntity(json)
+    cursor.downField("query").as[String].toOption match {
+      case Some(query) =>
+        QueryParser.parse(query) match {
+          case Success(queryAst) =>
+            newsRetrieveService.get(queryAst).map { json =>
+              Response[F](status = Ok).withEntity(json)
+            }
+          case Failure(error) =>
+            Concurrent[F].delay(
+              Response[F](status = BadRequest)
+                .withEntity(
+                  Json.obj("error" -> Json.fromString(error.getMessage))
+                )
+            )
         }
-      case Failure(error) =>
+      case None =>
         Concurrent[F].delay(
           Response[F](status = BadRequest)
-            .withEntity(Json.obj("error" -> Json.fromString(error.getMessage)))
+            .withEntity(
+              Json.obj("error" -> Json.fromString("query field not found"))
+            )
         )
     }
+
   }
 
 }

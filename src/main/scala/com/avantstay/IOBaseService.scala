@@ -20,10 +20,9 @@ object IOBaseService extends IOApp {
       loadedServiceConfig <- ServiceConfig.load[IO](blockingContext)
       urlsConfig <- IO(loadedServiceConfig.client.api.urls)
       headlinePostgresRepo <- IO(HeadlinePostgresRepo[IO])
-      scraperService <- IO(
-        ScraperNyTimesService[IO](urlsConfig.nytimes)(headlinePostgresRepo)
-      )
-//      _ <- scraperService.scrape // todo: need to define in correct place
+      _ <- ScraperNyTimesService[IO](urlsConfig.nytimes)(
+        headlinePostgresRepo
+      ).scrape
       newsRetrieveService <- IO(
         NewsRetrieveService[IO](headlinePostgresRepo)(
           implicitly[Concurrent[IO]],

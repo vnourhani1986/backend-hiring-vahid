@@ -24,7 +24,7 @@ class ScraperNyTimesService[F[_]: Concurrent](
   override def parse(document: Document): F[Seq[Headline]] =
     for {
       storyWrapper <- Concurrent[F].delay(
-        document >> elementList("section .story-wrapper a h3") // todo: need to check
+        document >> elementList("section .story-wrapper a h3")
       )
       links <- Concurrent[F].delay(
         storyWrapper.map(_.parent.get) >?> attr("href")("a")
@@ -33,7 +33,7 @@ class ScraperNyTimesService[F[_]: Concurrent](
       titleLinks <- Concurrent[F].delay(
         links
           .zip(h3s)
-          .filter { case (link, h3) => link.isDefined }
+          .filter { case (link, _) => link.isDefined }
           .map { case (link, h3) => (link.get, h3) }
       )
     } yield titleLinks.map { case (link, title) => Headline(title, link) }

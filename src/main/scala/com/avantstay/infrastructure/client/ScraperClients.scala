@@ -11,7 +11,7 @@ sealed trait ScraperClients[F[_]] {
 class ScraperNYTimesClients[F[_]: Concurrent](url: String, browser: Browser)
     extends ScraperClients[F] {
   override def get: F[Document] =
-    Concurrent[F].delay(browser.get(url)) // todo: need to check for async
+    Concurrent[F].delay(browser.get(url))
 }
 
 object ScraperNYTimesClients {
