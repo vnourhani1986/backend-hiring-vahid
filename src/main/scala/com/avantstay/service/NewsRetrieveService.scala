@@ -22,10 +22,10 @@ class NewsRetrieveService[F[_]: Concurrent](
 
   import NewsRetrieveService._
 
-  private val NewsType: ObjectType[Unit, News] =
+  private implicit val NewsType: ObjectType[Unit, News] =
     deriveObjectType[Unit, News](ObjectTypeDescription("news headlines"))
 
-  private val QueryType: ObjectType[HeadlineRepo[F], Unit] = ObjectType(
+  private implicit val QueryType: ObjectType[HeadlineRepo[F], Unit] = ObjectType(
     "Query",
     fields[HeadlineRepo[F], Unit](
       Field(

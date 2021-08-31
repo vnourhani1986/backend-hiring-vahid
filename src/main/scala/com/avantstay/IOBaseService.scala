@@ -11,7 +11,7 @@ import java.util.concurrent.Executors
 import scala.concurrent.ExecutionContext
 
 object IOBaseService extends IOApp {
-  override def run(args: List[String]): IO[ExitCode] = {
+  override def run(args: List[String]): IO[ExitCode] =
     for {
       nonBlockingPool <- IO(Executors.newFixedThreadPool(4))
       nonBlockingContext <- IO(ExecutionContext.fromExecutor(nonBlockingPool))
@@ -46,6 +46,7 @@ object IOBaseService extends IOApp {
           .compile
           .lastOrError
     } yield server
-  }
 
+// todo: 2. writing some tests
+// todo: 3. adding zio and monix data types
 }

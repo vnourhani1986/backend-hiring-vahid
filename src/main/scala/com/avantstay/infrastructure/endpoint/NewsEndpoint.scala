@@ -39,20 +39,19 @@ class NewsEndpoint[F[_]: Concurrent](
               Response[F](status = Ok).withEntity(json)
             }
           case Failure(error) =>
-            Concurrent[F].delay(
-              Response[F](status = BadRequest)
-                .withEntity(
-                  Json.obj("error" -> Json.fromString(error.getMessage))
-                )
-            )
+            Response[F](status = BadRequest)
+              .withEntity(
+                Json.obj("error" -> Json.fromString(error.getMessage))
+              )
+              .pure
         }
       case None =>
-        Concurrent[F].delay(
-          Response[F](status = BadRequest)
-            .withEntity(
-              Json.obj("error" -> Json.fromString("query field not found"))
-            )
-        )
+        Response[F](status = BadRequest)
+          .withEntity(
+            Json.obj("error" -> Json.fromString("query field not found"))
+          )
+          .pure
+
     }
 
   }
