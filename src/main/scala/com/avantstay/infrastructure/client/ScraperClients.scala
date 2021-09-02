@@ -10,8 +10,11 @@ sealed trait ScraperClients[F[_]] {
 
 class ScraperNYTimesClients[F[_]: Sync](url: String, browser: Browser)
     extends ScraperClients[F] {
+
+  private val F: cats.effect.Sync[F] = implicitly
+
   override def get: F[Document] =
-    Sync[F].delay(browser.get(url))
+    F.delay(browser.get(url))
 }
 
 object ScraperNYTimesClients {

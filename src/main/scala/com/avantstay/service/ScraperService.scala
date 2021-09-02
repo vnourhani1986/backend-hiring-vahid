@@ -2,7 +2,7 @@ package com.avantstay.service
 
 import cats.effect.Sync
 import cats.implicits._
-import com.avantstay.infrastructure.client.{ScraperClients, ScraperNYTimesClients}
+import com.avantstay.infrastructure.client.ScraperClients
 import com.avantstay.infrastructure.repo.HeadlineRepo
 import com.avantstay.model.generic.Headline
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
@@ -20,9 +20,12 @@ class ScraperNyTimesService[F[_]: Sync](
     headlineRepo: HeadlineRepo[F],
     scraperClients: ScraperClients[F]
 ) extends ScraperService[F] {
+
+  private val F: cats.effect.Sync[F] = implicitly
+
   override def get: F[Document] = scraperClients.get
   override def parse(document: Document): F[Seq[Headline]] =
-    Sync[F].delay {
+    F.delay {
       val storyWrapperAH3 =
         document >> elementList("section .story-wrapper a h3")
       val (links, h3s) = (
@@ -48,10 +51,11 @@ class ScraperNyTimesService[F[_]: Sync](
 
 object ScraperNyTimesService {
   def apply[F[_]: Sync](
-      url: String
-  )(headlineRepo: HeadlineRepo[F]): ScraperNyTimesService[F] =
+      scraperClients: ScraperClients[F],
+      headlineRepo: HeadlineRepo[F]
+  ): ScraperNyTimesService[F] =
     new ScraperNyTimesService[F](
       headlineRepo,
-      ScraperNYTimesClients[F](url)
+      scraperClients
     )
 }

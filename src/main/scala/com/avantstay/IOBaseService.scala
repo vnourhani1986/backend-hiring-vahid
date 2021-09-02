@@ -1,9 +1,10 @@
 package com.avantstay
 
 import cats.effect.{Blocker, Concurrent, ExitCode, IO, IOApp}
+import com.avantstay.infrastructure.client.ScraperNYTimesClients
 import com.avantstay.infrastructure.endpoint.NewsEndpoint
 import com.avantstay.infrastructure.repo.HeadlinePostgresRepo
-import com.avantstay.service.{NewsRetrieveService, ScraperNyTimesService}
+import com.avantstay.service.{NewsRetrieveServiceImpl, ScraperNyTimesService}
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 
@@ -19,12 +20,12 @@ object IOBaseService extends IOApp {
       blockingContext <- IO(Blocker.liftExecutorService(blockingPool))
       loadedServiceConfig <- ServiceConfig.load[IO](blockingContext)
       urlsConfig <- IO(loadedServiceConfig.client.api.urls)
+      scraperClients <- IO(ScraperNYTimesClients[IO](urlsConfig.nytimes))
       headlinePostgresRepo <- IO(HeadlinePostgresRepo[IO])
-      _ <- ScraperNyTimesService[IO](urlsConfig.nytimes)(
-        headlinePostgresRepo
-      ).scrape
+      _ <-
+        ScraperNyTimesService[IO](scraperClients, headlinePostgresRepo).scrape
       newsRetrieveService <- IO(
-        NewsRetrieveService[IO](headlinePostgresRepo)(
+        NewsRetrieveServiceImpl[IO](headlinePostgresRepo)(
           implicitly[Concurrent[IO]],
           nonBlockingContext
         )

@@ -14,6 +14,8 @@ class HeadlinePostgresRepo[F[_]: Concurrent](
     ctx: PostgresJdbcContext[SnakeCase.type]
 ) extends HeadlineRepo[F] {
 
+  private val F: cats.effect.Concurrent[F] = implicitly
+
   import ctx._
 
   override def get: Seq[Headline] =
@@ -29,7 +31,7 @@ class HeadlinePostgresRepo[F[_]: Concurrent](
         ).onConflictIgnore
       )
     }
-    Concurrent[F].delay(!ctx.run(insertQuote).contains(0))
+    F.delay(!ctx.run(insertQuote).contains(0))
   }
 }
 

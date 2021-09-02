@@ -13,6 +13,7 @@ object Dependencies {
     val logback = "1.2.3"
     val pureConfig = "0.14.0"
     val catsEffectScalaTest = "0.5.2"
+    val mockitoCats = "1.16.39"
   }
 
   val catsEffect = Seq(
@@ -38,7 +39,8 @@ object Dependencies {
   ).map(_ % Versions.logback)
 
   val test = Seq(
-    "com.codecommit" %% "cats-effect-testing-scalatest" % Versions.catsEffectScalaTest % "test"
+    "com.codecommit" %% "cats-effect-testing-scalatest" % Versions.catsEffectScalaTest % "test",
+    "org.mockito" %% "mockito-scala-cats" % Versions.mockitoCats % "test"
   )
 
   val pureConfig = Seq(

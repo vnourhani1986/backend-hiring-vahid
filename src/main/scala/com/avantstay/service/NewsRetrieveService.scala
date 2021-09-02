@@ -14,13 +14,19 @@ import sangria.schema.{Field, ListType, ObjectType, Schema, fields}
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
-class NewsRetrieveService[F[_]: Concurrent](
+trait NewsRetrieveService[F[_]] {
+  def get(query: Document): F[Json]
+}
+
+class NewsRetrieveServiceImpl[F[_]: Concurrent](
     headlineRepo: HeadlineRepo[F]
 )(implicit
     executionContext: ExecutionContext
-) {
+) extends NewsRetrieveService[F] {
 
-  import NewsRetrieveService._
+  import NewsRetrieveServiceImpl._
+
+  private val F: cats.effect.Concurrent[F] = implicitly
 
   private implicit val NewsType: ObjectType[Unit, News] =
     deriveObjectType[Unit, News](ObjectTypeDescription("news headlines"))
@@ -47,15 +53,16 @@ class NewsRetrieveService[F[_]: Concurrent](
       }
     }
 
+
 }
 
-object NewsRetrieveService {
+object NewsRetrieveServiceImpl {
 
   def apply[F[_]: Concurrent](
       headlineRepo: HeadlineRepo[F]
   )(implicit
       executionContext: ExecutionContext
-  ): NewsRetrieveService[F] = new NewsRetrieveService[F](headlineRepo)
+  ): NewsRetrieveService[F] = new NewsRetrieveServiceImpl[F](headlineRepo)
 
   private val headlineToNews: Headline => News =
     headline =>

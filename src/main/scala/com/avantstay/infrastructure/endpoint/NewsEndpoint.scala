@@ -6,9 +6,9 @@ import com.avantstay.service.NewsRetrieveService
 import io.circe.{HCursor, Json}
 import org.http4s.Method.POST
 import org.http4s.Status.BadRequest
-import org.http4s.circe.{jsonEncoder, jsonOf}
+import org.http4s.circe.{jsonDecoder, jsonEncoder}
 import org.http4s.dsl.io.{->, /, Ok, Root}
-import org.http4s.{EntityDecoder, HttpRoutes, Response}
+import org.http4s.{HttpRoutes, Response}
 import sangria.parser.QueryParser
 
 import scala.concurrent.ExecutionContext
@@ -17,8 +17,6 @@ import scala.util.{Failure, Success}
 class NewsEndpoint[F[_]: Concurrent](
     newsRetrieveService: NewsRetrieveService[F]
 ) {
-
-  implicit val decoder: EntityDecoder[F, Json] = jsonOf[F, Json]
 
   def routes: HttpRoutes[F] =
     HttpRoutes.of[F] {
