@@ -10,6 +10,7 @@ lazy val root = (project in file("."))
   .settings(
     libraryDependencies ++=
       catsEffect ++
+        monix ++
         circe ++
         http4s ++
         sangria ++

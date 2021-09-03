@@ -3,6 +3,8 @@ import sbt._
 object Dependencies {
 
   object Versions {
+    val monix = "3.4.0"
+    val monixBio = "1.2.0"
     val circe = "0.12.3"
     val http4s = "1.0.0-M9"
     val sangria = "2.0.0"
@@ -19,6 +21,11 @@ object Dependencies {
   val catsEffect = Seq(
     "org.typelevel" %% "cats-effect" % "2.2.0" withSources () withJavadoc (),
     "io.chrisdavenport" %% "cats-effect-time" % "0.1.2"
+  )
+
+  val monix = Seq(
+    "io.monix" %% "monix" % Versions.monix,
+    "io.monix" %% "monix-bio" % Versions.monixBio
   )
 
   val circe = Seq(
