@@ -45,9 +45,6 @@ functional state management.
 
 _This test will be used to evaluate your skills as a functional programmer, as well as code organization and cleanliness and test coverage._
 
-### Questions?
-Send an email to coding-test@avantstay.com
-
 ___
 
 The average time a programmer takes to complete this assignment is 6 hours.

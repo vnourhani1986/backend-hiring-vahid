@@ -5,6 +5,8 @@ object Dependencies {
   object Versions {
     val monix = "3.4.0"
     val monixBio = "1.2.0"
+    val zio = "2.0.0-M2"
+    val zioInteropCats = "2.5.1.0"
     val circe = "0.12.3"
     val http4s = "1.0.0-M9"
     val sangria = "2.0.0"
@@ -26,6 +28,11 @@ object Dependencies {
   val monix = Seq(
     "io.monix" %% "monix" % Versions.monix,
     "io.monix" %% "monix-bio" % Versions.monixBio
+  )
+
+  val zio = Seq(
+    "dev.zio" %% "zio" % Versions.zio,
+    "dev.zio" %% "zio-interop-cats" % Versions.zioInteropCats
   )
 
   val circe = Seq(

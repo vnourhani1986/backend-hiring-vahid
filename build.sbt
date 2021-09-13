@@ -11,6 +11,7 @@ lazy val root = (project in file("."))
     libraryDependencies ++=
       catsEffect ++
         monix ++
+        zio ++
         circe ++
         http4s ++
         sangria ++
@@ -31,5 +32,6 @@ ThisBuild / scalacOptions ++= Seq(
   "-Xfatal-warnings",
   "-language:postfixOps",
   "-language:higherKinds",
+  "-Ylog-classpath"
 //  "-Ypartial-unification"
 )
